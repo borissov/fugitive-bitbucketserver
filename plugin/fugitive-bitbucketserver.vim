@@ -22,12 +22,13 @@ function! s:bitbucketserver_url(opts, ...) abort
     let root = 'https://' . repo
   endif
   let reponame = split(root,'/')[-1]
+  let cursor_pos = getpos(".")
   let root = substitute(root,reponame,'repos/'.reponame,'')
   let root = substitute(root,'/scm/','/projects/','')
   if path =~# '^\.git/refs/heads/'
-    return root . '/commits/' . path[16:-1]
+    return root . '/commits/'.path[16:-1]
   elseif path =~# '^\.git/refs/tags/'
-    return root . '/browse/' .path[15:-1]
+    return root . '/browse/'.path[15:-1]
   elseif path =~# '.git/\%(config$\|hooks\>\)'
     return root . '/admin'
   elseif path =~# '^\.git\>'
@@ -41,7 +42,7 @@ function! s:bitbucketserver_url(opts, ...) abort
   if get(a:opts, 'type', '') ==# 'tree' || a:opts.path =~# '/$'
     return ''
   elseif get(a:opts, 'type', '') ==# 'blob' || a:opts.path =~# '[^/]$'
-    let url = root . '/browse/'.path.'?until='.commit 
+    let url = root . '/browse/'.path.'?until='.commit."\\#".cursor_pos[1]
     if get(a:opts, 'line1')
       let url .= '#' . fnamemodify(path, ':t') . '-' . a:opts.line1
       if get(a:opts, 'line2')
