@@ -5,10 +5,6 @@
 Via Plugin Manager
 #### Vundle
 ```viml
-    Plugin 'borissov/fugitive-bitbucketserver
-```
-#### Vundle
-```viml
     Plugin 'borissov/fugitive-bitbucketserver'
 ```
 #### VIM Plug 
