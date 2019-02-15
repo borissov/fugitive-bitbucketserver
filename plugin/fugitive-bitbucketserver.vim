@@ -16,14 +16,14 @@ function! s:bitbucketserver_url(opts, ...) abort
   if repo ==# ''
     return ''
   endif
+  let url_split = split(repo,'/')
+
   if index(domains, 'http://' . matchstr(repo, '^[^:/]*')) >= 0
-    let root = 'http://' . repo
+    let root = 'http://'.url_split[-4] .'/projects/'.toupper(url_split[-2]).'/repos/'.url_split[-1]
   else
-    let root = 'https://' . repo
+    let root = 'https://'.url_split[-4] .'/projects/'.toupper(url_split[-2]).'/repos/'.url_split[-1]
   endif
-  let reponame = split(root,'/')[-1]
-  let root = substitute(root,reponame,'repos/'.reponame,'')
-  let root = substitute(root,'/scm/','/projects/','')
+
   if path =~# '^\.git/refs/heads/'
     return root . '/commits/'.path[16:-1]
   elseif path =~# '^\.git/refs/tags/'
@@ -44,7 +44,7 @@ function! s:bitbucketserver_url(opts, ...) abort
     let url = root . '/browse/'.path.'?until='.commit
     if get(a:opts, 'line1')
       let url .= '\#' . a:opts.line1
-      if get(a:opts, 'line2')
+      if get(a:opts, 'line2') != get(a:opts, 'line1')
         let url .= '-' . a:opts.line2
       endif
     endif
