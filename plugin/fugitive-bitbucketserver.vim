@@ -42,11 +42,11 @@ function! s:bitbucketserver_url(opts, ...) abort
   if get(a:opts, 'type', '') ==# 'tree' || a:opts.path =~# '/$'
     return ''
   elseif get(a:opts, 'type', '') ==# 'blob' || a:opts.path =~# '[^/]$'
-    let url = root . '/browse/'.path.'?until='.commit."\\#".cursor_pos[1]
+    let url = root . '/browse/'.path.'?until='.commit
     if get(a:opts, 'line1')
-      let url .= '#' . fnamemodify(path, ':t') . '-' . a:opts.line1
+      let url .= '\#' . a:opts.line1
       if get(a:opts, 'line2')
-        let url .= ':' . a:opts.line2
+        let url .= '-' . a:opts.line2
       endif
     endif
   else
