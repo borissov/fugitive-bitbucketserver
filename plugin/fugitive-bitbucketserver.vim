@@ -22,7 +22,6 @@ function! s:bitbucketserver_url(opts, ...) abort
     let root = 'https://' . repo
   endif
   let reponame = split(root,'/')[-1]
-  let cursor_pos = getpos(".")
   let root = substitute(root,reponame,'repos/'.reponame,'')
   let root = substitute(root,'/scm/','/projects/','')
   if path =~# '^\.git/refs/heads/'
