@@ -6,16 +6,21 @@ function! s:bitbucketserver_url(opts, ...) abort
   if a:0 || type(a:opts) != type({})
     return ''
   endif
-  let path = substitute(a:opts.path, '^/', '', '')
-  let domain_pattern = 'bitbucket\.org'
-  let domains = exists('g:fugitive_bitbucketservers_domains') ? g:fugitive_bitbucketservers_domains : []
+
+  
+  let domains = g:fugitive_bitbucketservers_domains
+  let domain_patterns = []
+ 
   for domain in domains
-    let domain_pattern .= '\|' . escape(split(domain, '://')[-1], '.')
+    call add(domain_patterns, escape(split(domain, '://')[-1], '.'))
   endfor
+
+  let domain_pattern = join(domain_patterns, '\|')
   let repo = matchstr(a:opts.remote,'^\%(https\=://\|git://\|\(ssh://\)\=git@\)\%(.\{-\}@\)\=\zs\('.domain_pattern.'\)[/:].\{-\}\ze\%(\.git\)\=$')
   if repo ==# ''
     return ''
   endif
+  
   let url_split = split(repo,'/')
 
   if index(domains, 'http://' . matchstr(repo, '^[^:/]*')) >= 0
@@ -24,6 +29,7 @@ function! s:bitbucketserver_url(opts, ...) abort
     let root = 'https://'.url_split[-4] .'/projects/'.toupper(url_split[-2]).'/repos/'.url_split[-1]
   endif
 
+  let path = substitute(a:opts.path, '^/', '', '')
   if path =~# '^\.git/refs/heads/'
     return root . '/commits/'.path[16:-1]
   elseif path =~# '^\.git/refs/tags/'
