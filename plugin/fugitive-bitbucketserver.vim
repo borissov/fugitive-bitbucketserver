@@ -49,7 +49,7 @@ function! s:bitbucketserver_url(opts, ...) abort
   elseif get(a:opts, 'type', '') ==# 'blob' || a:opts.path =~# '[^/]$'
     let url = root . '/browse/'.path.'?until='.commit
     if get(a:opts, 'line1')
-      let url .= '\#' . a:opts.line1
+      let url .= '#' . a:opts.line1
       if get(a:opts, 'line2') != get(a:opts, 'line1')
         let url .= '-' . a:opts.line2
       endif
